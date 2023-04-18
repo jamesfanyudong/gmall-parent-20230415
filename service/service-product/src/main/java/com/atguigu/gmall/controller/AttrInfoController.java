@@ -1,13 +1,14 @@
 package com.atguigu.gmall.controller;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.model.product.BaseAttrInfo;
+import com.atguigu.gmall.model.product.BaseAttrValue;
+import com.atguigu.gmall.model.productDto.AttrInfoRequest;
 import com.atguigu.gmall.service.BaseAttrInfoService;
+import com.atguigu.gmall.service.BaseAttrValueService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class AttrInfoController {
 
     @Autowired
     private BaseAttrInfoService attrInfoService;
+    @Autowired
+    private BaseAttrValueService attrValueService;
     /**
      * 根据分类id获取商品的属性信息
      * @return
@@ -39,5 +42,25 @@ public class AttrInfoController {
         return Result.ok(list);
     }
 
+    /**
+     * 获取属性信息
+     * @param attrId
+     * @return
+     */
+    @GetMapping("/getAttrValueList/{attrId}")
+    public Result getAttrValueList(@PathVariable("attrId") String attrId){
+        List<BaseAttrValue> list = attrValueService.getAttrValueList(attrId);
+        return Result.ok(list);
+    }
+    @PostMapping("/saveAttrInfo")
+    public Result saveAttrInfo(@RequestBody AttrInfoRequest attrInfoRequest){
+        Result result =  attrValueService.saveAttrInfo(attrInfoRequest);
+        if (result.getCode().equals(ResultCodeEnum.SUCCESS.getCode())){
+            return Result.ok();
+        }else {
+            return Result.fail();
+        }
+
+    }
 
 }

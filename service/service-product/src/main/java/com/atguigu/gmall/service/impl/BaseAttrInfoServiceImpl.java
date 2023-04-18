@@ -16,7 +16,6 @@ import java.util.List;
 * @createDate 2023-04-15 15:28:38
 */
 @Service
-
 public class BaseAttrInfoServiceImpl extends ServiceImpl<BaseAttrInfoMapper, BaseAttrInfo>
     implements BaseAttrInfoService{
     @Autowired
