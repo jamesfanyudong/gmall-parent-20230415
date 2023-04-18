@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class BaseAttrValueServiceImpl extends ServiceImpl<BaseAttrValueMapper, B
     }
 
     @Override
+    @Transactional
     public Result saveAttrInfo(AttrInfoRequest attrInfoRequest) {
         // 保存属性信息到 base_attr_info
         Result result = new Result();

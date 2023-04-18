@@ -28,13 +28,28 @@ public class BaseAttrInfoServiceImpl extends ServiceImpl<BaseAttrInfoMapper, Bas
             return getBaseAttrInfoList(category1Id, "1");
         } else if ("0".equals(category3Id)){
             // 查二级分类的平台属性
-            return getBaseAttrInfoList(category2Id, "2");
+            return getTwoBaseAttrInfoList(category1Id,category2Id);
 
         }else {
             // 查三级分类的平台属性
-            return getBaseAttrInfoList(category3Id, "3");
+            return getAllBaseAttrInfoList(category1Id,category2Id,category3Id);
         }
 
+    }
+
+    private List<BaseAttrInfo> getTwoBaseAttrInfoList(String category1Id, String category2Id) {
+        LambdaQueryWrapper<BaseAttrInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(BaseAttrInfo::getCategoryId,category1Id).eq(BaseAttrInfo::getCategoryLevel, 1).or().
+                eq(BaseAttrInfo::getCategoryId,category2Id).eq(BaseAttrInfo::getCategoryLevel, 2);
+        return attrInfoMapper.selectList(wrapper);
+    }
+
+    private List<BaseAttrInfo> getAllBaseAttrInfoList(String category1Id, String category2Id, String category3Id) {
+        LambdaQueryWrapper<BaseAttrInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(BaseAttrInfo::getCategoryId,category1Id).eq(BaseAttrInfo::getCategoryLevel, 1).or().
+                eq(BaseAttrInfo::getCategoryId,category2Id).eq(BaseAttrInfo::getCategoryLevel, 2).or().
+                eq(BaseAttrInfo::getCategoryId,category3Id).eq(BaseAttrInfo::getCategoryLevel, 3);
+        return attrInfoMapper.selectList(wrapper);
     }
 
     /**
