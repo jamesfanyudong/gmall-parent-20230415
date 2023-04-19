@@ -2,12 +2,16 @@ package com.atguigu.gmall.service.impl;
 
 import com.atguigu.gmall.mapper.BaseAttrInfoMapper;
 import com.atguigu.gmall.model.product.BaseAttrInfo;
+import com.atguigu.gmall.model.product.BaseAttrValue;
 import com.atguigu.gmall.service.BaseAttrInfoService;
+import com.atguigu.gmall.service.BaseAttrValueService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,10 +20,14 @@ import java.util.List;
 * @createDate 2023-04-15 15:28:38
 */
 @Service
+@Slf4j
 public class BaseAttrInfoServiceImpl extends ServiceImpl<BaseAttrInfoMapper, BaseAttrInfo>
     implements BaseAttrInfoService{
     @Autowired
     private BaseAttrInfoMapper attrInfoMapper;
+    @Autowired
+    private BaseAttrValueService baseAttrValueService;
+
     @Override
     public List<BaseAttrInfo> getAttrInfoList(String category1Id, String category2Id, String category3Id) {
         // 查找以及分类的属性
@@ -33,6 +41,62 @@ public class BaseAttrInfoServiceImpl extends ServiceImpl<BaseAttrInfoMapper, Bas
         }else {
             // 查三级分类的平台属性
             return getAllBaseAttrInfoList(category1Id,category2Id,category3Id);
+        }
+
+    }
+
+    @Override
+    public List<BaseAttrInfo> getAttrInfoList2(String category1Id, String category2Id, String category3Id) {
+
+        return attrInfoMapper.getAttrInfoList2(category1Id,category2Id,category3Id);
+    }
+
+    @Override
+    public void insertAttrInfo(BaseAttrInfo attrInfo) {
+        log.info("新增属性信息");
+        // 保存属性名
+        attrInfoMapper.insert(attrInfo);
+        Long id = attrInfo.getId();
+        // 保存属性值
+        List<BaseAttrValue> attrValueList = attrInfo.getAttrValueList();
+        if (attrValueList.size() != 0 && attrValueList != null){
+            for (BaseAttrValue baseAttrValue : attrValueList) {
+                baseAttrValue.setAttrId(id);
+            }
+        }
+        // 批量保存
+        baseAttrValueService.saveBatch(attrValueList);
+
+    }
+
+    @Override
+    public void updateAttrInfoAndValue(BaseAttrInfo attrInfo) {
+        // 修改属性名信息
+        baseMapper.updateById(attrInfo);
+        List<Long> vIds = new ArrayList<>();
+        List<BaseAttrValue> attrValueList = attrInfo.getAttrValueList();
+        attrValueList.forEach(attrValue -> {
+            if (attrValue.getAttrId() != null){
+                // 新增属性值
+                attrValue.setId(attrInfo.getId());
+                baseAttrValueService.save(attrValue);
+            }else {
+                // 修改属性值
+                baseAttrValueService.updateById(attrValue);
+                vIds.add(attrValue.getId());
+            }
+        });
+        // 删除属性值
+        if (vIds.size() > 0){
+            // 删除部分属性值
+            LambdaQueryWrapper<BaseAttrValue> deleWra = new LambdaQueryWrapper<>();
+            deleWra.notIn(BaseAttrValue::getId,vIds).eq(BaseAttrValue::getAttrId,attrInfo.getId());
+            baseAttrValueService.remove(deleWra);
+        }else {
+            // 删除全部
+            LambdaQueryWrapper<BaseAttrValue> deleWra = new LambdaQueryWrapper<>();
+            deleWra.eq(BaseAttrValue::getAttrId,attrInfo.getId());
+            baseAttrValueService.remove(deleWra);
         }
 
     }

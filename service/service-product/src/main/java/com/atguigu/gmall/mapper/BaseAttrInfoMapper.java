@@ -3,6 +3,9 @@ package com.atguigu.gmall.mapper;
 import com.atguigu.gmall.model.product.BaseAttrInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author fyd20
@@ -13,6 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BaseAttrInfoMapper extends BaseMapper<BaseAttrInfo> {
 
+    List<BaseAttrInfo> getAttrInfoList2(@Param("c1Id") String category1Id, @Param("c2Id") String category2Id, @Param("c3Id") String category3Id);
 }
 
 

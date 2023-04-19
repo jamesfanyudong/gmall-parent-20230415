@@ -1,10 +1,8 @@
 package com.atguigu.gmall.controller;
 
 import com.atguigu.gmall.common.result.Result;
-import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.model.product.BaseAttrInfo;
 import com.atguigu.gmall.model.product.BaseAttrValue;
-import com.atguigu.gmall.model.productDto.AttrInfoRequest;
 import com.atguigu.gmall.service.BaseAttrInfoService;
 import com.atguigu.gmall.service.BaseAttrValueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,10 @@ public class AttrInfoController {
                               @PathVariable("category2Id") String category2Id,
                               @PathVariable("category3Id") String category3Id){
 
-        List<BaseAttrInfo> list = attrInfoService.getAttrInfoList(category1Id,
+//        List<BaseAttrInfo> list = attrInfoService.getAttrInfoList(category1Id,
+//                category2Id,
+//                category3Id);
+        List<BaseAttrInfo> list = attrInfoService.getAttrInfoList2(category1Id,
                 category2Id,
                 category3Id);
 
@@ -53,13 +54,15 @@ public class AttrInfoController {
         return Result.ok(list);
     }
     @PostMapping("/saveAttrInfo")
-    public Result saveAttrInfo(@RequestBody AttrInfoRequest attrInfoRequest){
-        Result result =  attrValueService.saveAttrInfo(attrInfoRequest);
-        if (result.getCode().equals(ResultCodeEnum.SUCCESS.getCode())){
-            return Result.ok();
+    public Result saveAttrInfo(@RequestBody BaseAttrInfo attrInfo){
+        if (attrInfo.getId() == null){
+            // 新增属性信息
+            attrInfoService.insertAttrInfo(attrInfo);
         }else {
-            return Result.fail();
+            // 修该属性信息
+            attrInfoService.updateAttrInfoAndValue(attrInfo);
         }
+        return Result.ok();
 
     }
 

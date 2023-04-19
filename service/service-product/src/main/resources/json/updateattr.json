@@ -1,0 +1,54 @@
+{
+  "id": 1,
+  "attrName": "价格",
+  "category1Id": 0,
+  "category2Id": 0,
+  "category3Id": 0,
+  "attrValueList": [
+    {
+      "id": 1,
+      "valueName": "0-499",
+      "attrId": 1
+    },
+    {
+      "id": 2,
+      "valueName": "500-999",
+      "attrId": 1
+    },
+    {
+      "id": 3,
+      "valueName": "1000-1699",
+      "attrId": 1
+    },
+    {
+      "id": 4,
+      "valueName": "1700-2799",
+      "attrId": 1
+    },
+    {
+      "id": 5,
+      "valueName": "2800-4499",
+      "attrId": 1
+    },
+    {
+      "id": 6,
+      "valueName": "4500-11999",
+      "attrId": 1
+    },
+    {
+      "id": 7,
+      "valueName": "12000以上",
+      "attrId": 1
+    },
+    {
+      "valueName": "15000",
+      "edit": false
+    },
+    {
+      "valueName": "20000",
+      "edit": false
+    }
+  ],
+  "categoryId": 61,
+  "categoryLevel": 3
+}

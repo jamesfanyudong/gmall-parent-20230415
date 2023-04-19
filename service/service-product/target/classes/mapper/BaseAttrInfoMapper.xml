@@ -15,4 +15,50 @@
         id,attr_name,category_id,
         category_level
     </sql>
+    <resultMap id="getAttrInfoList" type="com.atguigu.gmall.model.product.BaseAttrInfo" autoMapping="true">
+        <id column="id" property="id"></id>
+        <collection property="attrValueList" ofType="com.atguigu.gmall.model.product.BaseAttrValue" autoMapping="true">
+            <id property="id" column="vid"></id>
+        </collection>
+
+    </resultMap>
+    <select id="getAttrInfoList2" resultMap="getAttrInfoList">
+        select c.*,b.id vid,b.value_name,b.attr_id from base_attr_value b
+        inner join
+         (select * from base_attr_info a
+         <where>
+
+
+             <if test="c1Id !=  '' and c1Id != 0 ">
+                 (a.category_id = #{c1Id} and a.category_level = 1)
+             </if>
+
+             <if test="c2Id !=  '' and c2Id != 0 ">
+                or (a.category_id = #{c2Id} and a.category_level = 2)
+             </if>
+
+             <if test="c3Id !=  '' and c3Id != 0 ">
+                or (a.category_id = #{c3Id} and a.category_level = 3)
+             </if>
+
+         </where>
+
+         ) c
+          on b.attr_id = c.id
+<!--        select bai.*, bav.id vid, bav.value_name value_name, bav.attr_id attr_id-->
+<!--        from base_attr_info bai-->
+<!--        left join base_attr_value bav on bai.id = bav.attr_id-->
+<!--        <where>-->
+<!--            <if test="c1Id != 0">-->
+<!--                (bai.category_id = #{c1Id} and bai.category_level = 1)-->
+<!--            </if>-->
+<!--            <if test="c2Id != 0">-->
+<!--                or (bai.category_id = #{c2Id} and bai.category_level = 2)-->
+<!--            </if>-->
+<!--            <if test="c3Id != 0">-->
+<!--                or (bai.category_id = #{c3Id} and bai.category_level = 3)-->
+<!--            </if>-->
+<!--        </where>-->
+
+    </select>
 </mapper>
